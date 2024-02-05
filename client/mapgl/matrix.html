@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Distance Matrix</title>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+</head>
+
+<body>
+    <div id='map' style='width: 800px; height: 600px;'></div>
+    <button id="geoloc">Get Distance</button>
+    <h1 id="op"></h1>
+
+    <script>
+       mapboxgl.accessToken = 'pk.eyJ1Ijoic291Ymhpa2cyNiIsImEiOiJjbHM3amY5dmIxcHk3MmxvMzMxMjdzYjNtIn0.Ye3TwPjrjPkTUNjIoFskTg';
+
+       var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11'
+        });
+
+        const btn = document.getElementById('geoloc');
+        const op = document.getElementById('op');
+
+        btn.addEventListener('click', () => {
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+
+                // Replace 'DESTINATION_LATITUDE' and 'DESTINATION_LONGITUDE' with the actual destination coordinates
+            const destinationCoordinates = [86.4282, 20.5055];
+
+                // Make a request to Mapbox Distance Matrix API
+                fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${longitude},${latitude};${destinationCoordinates[0]},${destinationCoordinates[1]}?access_token=${mapboxgl.accessToken}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        const distance = data.distances[0][1]; // Distance in meters
+                        op.innerHTML = `Distance: ${distance} meters`;
+
+                        // Use the retrieved coordinates to create a line on the map
+                        map.addSource('route', {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Feature',
+                                'properties': {},
+                                'geometry': {
+                                    'type': 'LineString',
+                                    'coordinates': [
+                                        [longitude, latitude],
+                                        destinationCoordinates
+                                    ]
+                                }
+                            }
+                        });
+
+                        map.addLayer({
+                            'id': 'route',
+                            'type': 'line',
+                            'source': 'route',
+                            'layout': {
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            },
+                            'paint': {
+                                'line-color': '#888',
+                                'line-width': 8
+                            }
+                        });
+                    })
+                    .catch(error => console.error(error));
+            })
+        })
+    </script>
+</body>
+
+</html>

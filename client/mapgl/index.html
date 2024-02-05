@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+
+
+</head>
+
+<body>
+
+
+    <div id='map' style='width: 400px; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic291Ymhpa2cyNiIsImEiOiJjbHM3amY5dmIxcHk3MmxvMzMxMjdzYjNtIn0.Ye3TwPjrjPkTUNjIoFskTg';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11'
+        });
+    </script>
+
+    get Location =>
+    <button id="geoloc">C(lick) Me</button>
+    <h1 id="op"></h1>
+    <script>
+        const btn = document.getElementById('geoloc');
+        const op = document.getElementById('op');
+
+        btn.addEventListener('click', () => {
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                op.innerHTML = `${latitude},${longitude}`;
+                console.table(latitude,longitude)
+            })
+        })
+    </script>
+</body>
+
+</html>

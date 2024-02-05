@@ -1,0 +1,8 @@
+enum ROLE {
+    FARMER = "FARMER",
+    STORAGE_OWNER = "STORAGE_OWNER",
+    DISTRIBUTOR = "DISTRIBUTOR",
+    ADMIN = "ADMIN"
+  }
+
+export default ROLE;
